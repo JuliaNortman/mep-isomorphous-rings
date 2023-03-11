@@ -6,6 +6,36 @@ import ua.knu.csc.iss.ynortman.ring.model.RingInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RingOpsTest {
+    private final int k = 25;
+
+    private final RingInteger[] substitution = {
+            RingInteger.valueOf(1, k),
+            RingInteger.valueOf(6, k),
+            RingInteger.valueOf(8, k),
+            RingInteger.valueOf(10, k),
+            RingInteger.valueOf(2, k),
+            RingInteger.valueOf(4, k),
+            RingInteger.valueOf(3, k),
+            RingInteger.valueOf(5, k),
+            RingInteger.valueOf(7, k),
+            RingInteger.valueOf(9, k),
+            RingInteger.valueOf(11, k),
+            RingInteger.valueOf(13, k),
+            RingInteger.valueOf(15, k),
+            RingInteger.valueOf(17, k),
+            RingInteger.valueOf(19, k),
+            RingInteger.valueOf(21, k),
+            RingInteger.valueOf(12, k),
+            RingInteger.valueOf(14, k),
+            RingInteger.valueOf(16, k),
+            RingInteger.valueOf(18, k),
+            RingInteger.valueOf(20, k),
+            RingInteger.valueOf(24, k),
+            RingInteger.valueOf(22, k),
+            RingInteger.valueOf(23, k),
+            RingInteger.valueOf(0, k)
+    };
+
     @Test
     public void givenCoefs_whenCalculateGenG_thenReturnRingUnityRowTest() {
         int k = 6;
@@ -56,5 +86,49 @@ public class RingOpsTest {
         };
         int[][] actualTable = RingOps.multiplicationTable(6, additionTable);
         assertArrayEquals(expectedTable, actualTable);
+    }
+
+    @Test
+    void isomorphism_toACRing_Test() {
+        RingInteger expected = RingInteger.valueOf(1, k);
+        RingInteger actual = RingOps.isomorphism(RingInteger.valueOf(1, k), substitution, true);
+        assertEquals(expected, actual);
+
+        expected = RingInteger.valueOf(21, k);
+        actual = RingOps.isomorphism(RingInteger.valueOf(16, k), substitution, true);
+        assertEquals(expected, actual);
+
+        expected = RingInteger.zero(k);
+        actual = RingOps.isomorphism(RingInteger.valueOf(0, k), substitution, true);
+        assertEquals(expected, actual);
+
+        expected = RingInteger.valueOf(12, k);
+        actual = RingOps.isomorphism(RingInteger.valueOf(17, k), substitution, true);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void isomorphism_fromACRing_Test() {
+        RingInteger expected = RingInteger.valueOf(1, k);
+        RingInteger actual = RingOps.isomorphism(RingInteger.valueOf(1, k), substitution, false);
+        assertEquals(expected, actual);
+
+        expected = RingInteger.valueOf(2, k);
+        actual = RingOps.isomorphism(RingInteger.valueOf(6, k), substitution, false);
+        assertEquals(expected, actual);
+
+        expected = RingInteger.zero(k);
+        actual = RingOps.isomorphism(RingInteger.valueOf(0, k), substitution, false);
+        assertEquals(expected, actual);
+
+        expected = RingInteger.valueOf(23, k);
+        actual = RingOps.isomorphism(RingInteger.valueOf(22, k), substitution, false);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void isDivisorByOneTest() {
+        assertTrue(RingOps.isDivisorByOne(RingInteger.valueOf(4, k), substitution));
+        assertFalse(RingOps.isDivisorByOne(RingInteger.valueOf(2, k), substitution));
     }
 }

@@ -2,11 +2,14 @@ package ua.knu.csc.iss.ynortman.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import ua.knu.csc.iss.ynortman.ring.RingUtils;
 import ua.knu.csc.iss.ynortman.ring.model.RingInteger;
 
+import java.math.BigInteger;
 import java.util.Random;
 
+@Slf4j
 public class MatrixUtils {
 
     @ToString
@@ -48,12 +51,13 @@ public class MatrixUtils {
     * */
     public static RingInteger[][] nonSingularSquareMatrix(int dim, int r) {
         RingInteger[][] matrix = upperTriangularMatrix(dim, r);
+        log.debug(MatrixUtils.printMatrix(matrix, ""));
         Random random = new Random();
         int iterations = random.nextInt(200 - 20) + 20;
         for(int i = 0; i < iterations; ++i) {
             int operation = random.nextInt(4);
-            int j = random.nextInt(r);
-            int k = random.nextInt(r);
+            int j = random.nextInt(dim);
+            int k = random.nextInt(dim);
             switch (operation) {
                 case 0: {
                     //Interchange two rows
@@ -131,10 +135,10 @@ public class MatrixUtils {
         return matrix;
     }
 
-    public static RingInteger[][] matrixMultiply(RingInteger[][] A, RingInteger[][] B, int r) {
+    public static RingInteger[][] matrixMultiply(RingInteger[][] A, RingInteger[][] B) {
         RingInteger[][] result = new RingInteger[B.length][B[0].length];
         for(int i = 0; i < B.length; ++i) {
-            result[i] = RingUtils.zeroArray(B[0].length, r);
+            result[i] = RingUtils.zeroArray(B[0].length, B[0][0].getM());
         }
         for (int i = 0; i < A.length; ++i) {
             for (int j = 0; j < B[0].length; ++j) {
@@ -161,7 +165,7 @@ public class MatrixUtils {
         //log.debug(Arrays.deepToString(A));
         RingInteger[][] B = nonSingularSquareMatrix(n, r);
         //log.debug(Arrays.deepToString(B));
-        RingInteger[][] AB = matrixMultiply(A, B, r);
+        RingInteger[][] AB = matrixMultiply(A, B);
         RingInteger[][] matrix = new RingInteger[3*n][3*n];
         RingInteger[][] inverted = new RingInteger[3*n][3*n];
         for(int i = 0; i < matrix.length; ++i) {
@@ -187,4 +191,75 @@ public class MatrixUtils {
         return new InvertibleMatrixModel(matrix, inverted);
     }
 
+    public static RingInteger[][] operator(RingInteger[][] operator, RingInteger[][] matrix) {
+        return matrixMultiply(operator, matrix);
+    }
+
+    public static RingInteger[][] rowToColumn(RingInteger[] row) {
+        RingInteger[][] column = new RingInteger[row.length][1];
+        for (int i = 0; i < row.length; ++i) {
+            column[i][0] = row[i];
+        }
+        return column;
+    }
+
+    public static RingInteger[] columnToRow(RingInteger[][] column) {
+        RingInteger[] row = new RingInteger[column.length];
+        for(int i = 0; i < column.length; ++i) {
+            row[i] = column[i][0];
+        }
+        return row;
+    }
+
+    /*
+    * Adds vector to matrix column with index colIndex
+    * */
+    public static RingInteger[][] matrixAddVectorColumn(RingInteger[][] matrix, RingInteger[] vector,
+                                                       int colIndex) {
+        for(int i = 0; i < matrix.length; ++i) {
+            matrix[i][colIndex] = matrix[i][colIndex].add(vector[i]);
+        }
+        return matrix;
+    }
+
+    public static String printMatrix(RingInteger[][] matrix, String name) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        stringBuilder.append("Matrix ")
+                .append(name)
+                .append(":\n");
+        for (int i = 0; i < matrix.length; ++i) {
+            for (int j = 0; j < matrix[0].length; ++j) {
+                if (j == 0) {
+                    stringBuilder.append("{");
+                }
+                stringBuilder.append(matrix[i][j].getNumber());
+                if (j != matrix[i].length-1) {
+                    stringBuilder.append(", ");
+                }
+            }
+            stringBuilder.append("}");
+            if (i != matrix.length-1) {
+                stringBuilder.append(",\n");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public static String printVector(RingInteger[] vector, String name) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        stringBuilder.append("Vector ")
+                .append(name)
+                .append(":\n");
+        for (int i = 0; i < vector.length; ++i) {
+            if (i == 0) {
+                stringBuilder.append("{");
+            }
+            stringBuilder.append(vector[i].getNumber());
+            if (i != vector.length-1) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
+    }
 }

@@ -1,29 +1,35 @@
 package ua.knu.csc.iss.ynortman.ring.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 public class NHLDESystem {
-    final NHLDE[] system;
-    final int m;
-
+    private final NHLDE[] system;
 
     public NHLDESystem(NHLDE[] system) {
         this.system = system;
-        this.m = system[0].b.getM();
+    }
+
+    public NHLDESystem(RingInteger[][] system, RingInteger[] constants) {
+        this.system = new NHLDE[system.length];
+        for(int i = 0; i < system.length; ++i) {
+            this.system[i] = new NHLDE(system[i], constants[i]);
+        }
+    }
+
+    public NHLDESystem(int[][] coefs, int[] constants, int m) {
+        this.system = new NHLDE[coefs.length];
+        for (int i = 0; i < coefs.length; ++i) {
+            this.system[i] = new NHLDE(coefs[i], constants[i], m);
+        }
     }
 
     public int size() {
         return system.length;
     }
 
-    public NHLDE getEquation(int i) {
+    public NHLDE get(int i) {
         return system[i];
-    }
-
-    public void setEquation(int i, NHLDE equation) {
-        system[i] = equation;
     }
 
     @Override
@@ -33,14 +39,14 @@ public class NHLDESystem {
             arrRow.append("{a[")
                     .append(i)
                     .append("]=[");
-            for (int j = 0; j < system[i].a.length; ++j) {
-                arrRow.append(system[i].a[j].getNumber());
-                if(j+1 != system[i].a.length) {
+            for (int j = 0; j < system[i].getA().size(); ++j) {
+                arrRow.append(system[i].getA().get(j).getNumber());
+                if(j+1 != system[i].getA().size()) {
                     arrRow.append(", ");
                 }
             }
             arrRow.append("]; b=")
-                    .append(system[i].b.getNumber())
+                    .append(system[i].getB().getNumber())
                     .append("}");
             if(i + 1 != system.length) {
                 arrRow.append(", ");

@@ -2,10 +2,11 @@ package ua.knu.csc.iss.ynortman.ring.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Random;
 
 @Data
-public class RingInteger implements Comparable<RingInteger>{
+public class RingInteger implements Comparable<RingInteger>, Serializable {
     private final int number;
     private final int m;
 
@@ -20,7 +21,12 @@ public class RingInteger implements Comparable<RingInteger>{
 //    }
 
     public RingInteger(int number, int m) {
-        this.number = complement(number, m);
+        if(number < 0) {
+            while (number < 0) {
+                number += m;
+            }
+        }
+        this.number = number % m;
         this.m = m;
     }
 
@@ -37,12 +43,6 @@ public class RingInteger implements Comparable<RingInteger>{
     }
 
     public RingInteger add(RingInteger other) {
-//        if(ZERO.equals(this) || ONE.equals(this)) {
-//            return new RingInteger((number + other.number) % other.m, other.m);
-//        }
-//        if(ZERO.equals(other) || ONE.equals(other)) {
-//            return new RingInteger((number + other.number) % m, m);
-//        }
         if(m != other.m) {
             throw new ArithmeticException("Cannot add numbers which ring modules are not equal");
         }
@@ -83,12 +83,6 @@ public class RingInteger implements Comparable<RingInteger>{
     }
 
     public RingInteger multiply(RingInteger other) {
-//        if(ZERO.equals(this) || ONE.equals(this)) {
-//            return new RingInteger((number * other.number) % other.m, other.m);
-//        }
-//        if(ZERO.equals(other) || ONE.equals(other)) {
-//            return new RingInteger((number * other.number) % m, m);
-//        }
         if(m != other.m) {
             throw new ArithmeticException();
         }
@@ -109,10 +103,14 @@ public class RingInteger implements Comparable<RingInteger>{
     }
 
     public RingInteger gcd(RingInteger other) {
-        if (zero(other.m).equals(other)) {
-            return this;
+        return new RingInteger(gcd(number, other.number), m);
+    }
+
+    private int gcd(int n1, int n2) {
+        if (n2 == 0) {
+            return n1;
         }
-        return other.gcd(new RingInteger(other.number % number, m));
+        return gcd(n2, n1 % n2);
     }
 
     @Override
@@ -143,7 +141,7 @@ public class RingInteger implements Comparable<RingInteger>{
                 number += r;
             }
         }
-        return number % r;
+        return (r-number) % r;
     }
 
 }
