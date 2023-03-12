@@ -1,6 +1,7 @@
 package ua.knu.csc.iss.ynortman.ring.model;
 
 import lombok.extern.slf4j.Slf4j;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,5 +33,12 @@ class RingIntegerTest {
     void complementTest() {
         assertEquals(RingInteger.valueOf(1, 3), RingInteger.valueOf(2, 3).complement());
         assertEquals(RingInteger.valueOf(0, 8), RingInteger.valueOf(8, 8).complement());
+    }
+
+    @Test
+    public void equalsHashCodeContracts() {
+        EqualsVerifier.forClass(RingInteger.class)
+                .withIgnoredFields("m")
+                .verify();
     }
 }

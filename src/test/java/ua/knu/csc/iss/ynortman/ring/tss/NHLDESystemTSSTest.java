@@ -178,7 +178,7 @@ class NHLDESystemTSSTest {
 
     @Test
     void randomBasisTest() {
-        int k = 25;
+        int k = 125;
 //        RingInteger[][] nhlde = MatrixUtils.nonSingularSimpleMatrix(4, 8, k);
         RingInteger[][] nhlde = new RingInteger[][] {
                 {

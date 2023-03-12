@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 @Data
-public class RingInteger implements Comparable<RingInteger>, Serializable {
+public final class RingInteger implements Comparable<RingInteger>, Serializable {
     private final int number;
     private final int m;
 
@@ -50,20 +50,6 @@ public class RingInteger implements Comparable<RingInteger>, Serializable {
     }
 
     public RingInteger substract(RingInteger other) {
-//        if(ZERO.equals(this) || ONE.equals(this)) {
-//            int res = number - other.number;
-//            while (res < 0) {
-//                res += other.m;
-//            }
-//            return new RingInteger(res, other.m);
-//        }
-//        if(ZERO.equals(other) || ONE.equals(other)) {
-//            int res = number - other.number;
-//            while (res < 0) {
-//                res += m;
-//            }
-//            return new RingInteger(res, m);
-//        }
         if(m != other.m) {
             throw new ArithmeticException();
         }
@@ -76,9 +62,6 @@ public class RingInteger implements Comparable<RingInteger>, Serializable {
 
     // обернений
     public RingInteger complement() {
-//        if(ZERO.equals(this) || ONE.equals(this)) {
-//            throw new ArithmeticException("The ring of this values are unknown");
-//        }
         return new RingInteger(complement(number, m), m);
     }
 
@@ -135,6 +118,17 @@ public class RingInteger implements Comparable<RingInteger>, Serializable {
         return number == other.number && m == other.m;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (number ^ (number >>> 32));
+        if(number != 0 && number != 1) {
+            result = prime * result + (int) (m ^ (m >>> 32));
+        }
+        return result;
+    }
+
     private int complement(int number, int r) {
         if(number < 0) {
             while (number < 0) {
@@ -143,5 +137,4 @@ public class RingInteger implements Comparable<RingInteger>, Serializable {
         }
         return (r-number) % r;
     }
-
 }

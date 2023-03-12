@@ -1,9 +1,6 @@
 package ua.knu.csc.iss.ynortman.utils;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
+import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -36,13 +33,10 @@ public class RabbitUtils {
         log.debug("RECEIVE METHOD CALL");
         ConnectionFactory factory = getFactory();
         Connection connection = factory.newConnection();
-        /*connection.addShutdownListener(new ShutdownListener() {
-            @Override
-            public void shutdownCompleted(ShutdownSignalException e) {
-                e.printStackTrace();
-                log.error(String.valueOf(e.getReason()));
-            }
-        });*/
+//        connection.addShutdownListener(e -> {
+//            e.printStackTrace();
+//            log.error(String.valueOf(e.getReason()));
+//        });
         Channel channel = connection.createChannel();
 
         channel.queueDeclare(queueName, true, false, false, null);
@@ -52,12 +46,13 @@ public class RabbitUtils {
                 Object obj = SerializationUtils.deserialize(delivery.getBody());
                 log.debug(" [x] Received ");
                 action.accept(obj);
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                    log.error(e.getMessage());
-                }
+            connection.close();
+//                try {
+//                    connection.close();
+//                } catch (Exception e) {
+////                    e.printStackTrace();
+//                    log.error(e.getMessage());
+//                }
         };
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
     }
@@ -69,6 +64,7 @@ public class RabbitUtils {
             factory.setPort(Integer.parseInt(PropertyUtils.getProperty("rabbitmq.port")));
             factory.setUsername(PropertyUtils.getProperty("rabbitmq.username"));
             factory.setPassword(PropertyUtils.getProperty("rabbitmq.password"));
+            factory.setAutomaticRecoveryEnabled(true);
         }
         return factory;
     }

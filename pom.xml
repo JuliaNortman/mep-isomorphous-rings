@@ -52,6 +52,27 @@
             <version>5.14.1</version>
         </dependency>
 
+        <!-- https://www.baeldung.com/java-equals-hashcode-contracts -->
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>3.0.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.11.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -76,7 +97,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        ua.knu.csc.iss.ynortman.Main
+                                        ua.knu.csc.iss.ynortman.gui.GuiMain
                                     </mainClass>
                                 </manifest>
                             </archive>

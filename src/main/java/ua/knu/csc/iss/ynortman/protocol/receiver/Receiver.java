@@ -1,20 +1,18 @@
 package ua.knu.csc.iss.ynortman.protocol.receiver;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import ua.knu.csc.iss.ynortman.enoder.Encoder;
 import ua.knu.csc.iss.ynortman.protocol.sender.Sender;
 import ua.knu.csc.iss.ynortman.ring.RingOps;
 import ua.knu.csc.iss.ynortman.ring.RingUtils;
 import ua.knu.csc.iss.ynortman.ring.model.RingInteger;
+import ua.knu.csc.iss.ynortman.utils.FileUtils;
 import ua.knu.csc.iss.ynortman.utils.MatrixUtils;
 import ua.knu.csc.iss.ynortman.utils.RabbitUtils;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.math.BigInteger;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,41 +32,21 @@ public class Receiver {
     private List<MatrixUtils.InvertibleMatrixModel> invMatrices;
     private List<RingInteger[]> shiftVectors;
 
+    private String htmlContent = "<!DOCTYPE html>\n" +
+            "<html><head>\n" +
+            "<title>Alice</title>\n" +
+            "<meta charset=\"utf-8\">\n" +
+            "</head><body>";
+
     int r = 1; //TODO: remove fix constant
 
     public void prerequisites() {
         //Generate an initial substitution
         this.substitution = RingOps.substitution(b, c, k);
-//        this.substitution = new RingInteger[]{
-//                RingInteger.valueOf(1, k),
-//                RingInteger.valueOf(6, k),
-//                RingInteger.valueOf(8, k),
-//                RingInteger.valueOf(10, k),
-//                RingInteger.valueOf(2, k),
-//                RingInteger.valueOf(4, k),
-//                RingInteger.valueOf(3, k),
-//                RingInteger.valueOf(5, k),
-//                RingInteger.valueOf(7, k),
-//                RingInteger.valueOf(9, k),
-//                RingInteger.valueOf(11, k),
-//                RingInteger.valueOf(13, k),
-//                RingInteger.valueOf(15, k),
-//                RingInteger.valueOf(17, k),
-//                RingInteger.valueOf(19, k),
-//                RingInteger.valueOf(21, k),
-//                RingInteger.valueOf(12, k),
-//                RingInteger.valueOf(14, k),
-//                RingInteger.valueOf(16, k),
-//                RingInteger.valueOf(18, k),
-//                RingInteger.valueOf(20, k),
-//                RingInteger.valueOf(24, k),
-//                RingInteger.valueOf(22, k),
-//                RingInteger.valueOf(23, k),
-//                RingInteger.valueOf(0, k)
-//        };
+        this.htmlContent += FileUtils.printSubstitutionRow(this.substitution);
     }
 
-    private ReceivedMessage receivedMessage;
+    private ReceivedMessage receivedMessage = new ReceivedMessage();
 
     static class ReceivedMessage {
         private final StringBuilder msg = new StringBuilder();
@@ -88,7 +66,7 @@ public class Receiver {
         public final RingInteger[][] B;
     }
 
-    public void init() {
+    public String init() {
         class dWrapper {
             RingInteger[] d;
         }
@@ -106,19 +84,31 @@ public class Receiver {
                     if(receivedVectors.d.length > 0) {
                         //log.debug("Received vector: {}", Arrays.toString(d));
                         RingInteger[] res = step3(receivedVectors.d, receivedVectors.d1);
-//                        receivedMessage.appendMessageBlock(res);
+                        String messageBlock = Encoder.getInstance(k).numbersToText(res);
+                        receivedMessage.appendMessageBlock(messageBlock);
                         System.out.println("RECEIVED MESSAGE IS: " + Arrays.toString(res));
+                        System.out.println("RECEIVED MESSAGE IS: " + messageBlock);
                     }
                     wrapper.d = receivedVectors.d;
-                    log.debug("d warpper length: {}", wrapper.d.length);
+                    log.debug("d wrapper length: {}", wrapper.d.length);
                     log.debug("d length 1: {}", receivedVectors.d.length);
                     synchronized (wrapper) {
+                        log.debug("Notify");
                         wrapper.notify();
+                        log.debug("Notified");
+                    }
+                    if(wrapper.d.length == 0) {
+                        synchronized (wrapper) {
+                            log.debug("Notify 2");
+                            wrapper.notify();
+                            log.debug("Notified 2");
+                        }
                     }
                 });
                 synchronized (wrapper) {
                     wrapper.wait();
                 }
+                log.debug("End wait");
             }
         } catch (IOException | TimeoutException e) {
             log.error(e.getMessage());
@@ -126,7 +116,8 @@ public class Receiver {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        log.info("Received message: {}", receivedMessage.getMessage());
+        return receivedMessage.getMessage();
     }
 
     // During the algorithm we will need to calculate inverted matrices
@@ -158,10 +149,14 @@ public class Receiver {
                     this.mockMatrixB(), this.mockInvMatrixB()));
 //            this.invMatrices.add(i, MatrixUtils.triangularInvertibleMatrix(m, k));
             this.shiftVectors.add(i, RingUtils.randomVector(2, k));
+            this.htmlContent += FileUtils.printVector(this.shiftVectors.get(i), "Вектор a" + i + ":");
+
 //            this.shiftVectors.add(i, this.mockShift1());
 //            this.shiftVectors.add(i, RingUtils.randomVector(3*m, k));
         }
         this.shiftVectors.add(r, RingUtils.randomVector(2, k));
+        this.htmlContent += FileUtils.printVector(this.shiftVectors.get(r), "Вектор a" + r + ":");
+
 //        this.shiftVectors.add(r, this.mockShift2());
 //        this.shiftVectors.add(r, RingUtils.randomVector(3*m, k));
 
@@ -177,6 +172,11 @@ public class Receiver {
 
         log.debug(MatrixUtils.printMatrix(acRingA, "A"));
         log.debug(MatrixUtils.printMatrix(acRingD, "D"));
+
+        this.htmlContent += FileUtils.printMatrix(A, "Матриця A:");
+        this.htmlContent += FileUtils.printMatrix(D, "Матриця D:");
+        this.htmlContent += FileUtils.printMatrix(acRingA, "Матриця A в АКК:");
+        this.htmlContent += FileUtils.printMatrix(acRingD, "Матриця D в АКК:");
 
         return new MatricesModel(acRingA, acRingD);
     }
@@ -197,6 +197,12 @@ public class Receiver {
 
         RingInteger[] d = RingOps.vectorFromACRing(acRingVectorD, this.substitution);
         RingInteger[] d1 = RingOps.vectorFromACRing(acRingVectorD1, this.substitution);
+
+        this.htmlContent += FileUtils.printVector(acRingVectorD, "Вектор d в АКК:");
+        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Вектор d1 в АКК:");
+        this.htmlContent += FileUtils.printVector(d, "Вектор d:");
+        this.htmlContent += FileUtils.printVector(d1, "Вектор d1:");
+
 
         log.debug(MatrixUtils.printVector(d, "d"));
         log.debug(MatrixUtils.printVector(d1, "d1"));
@@ -221,7 +227,38 @@ public class Receiver {
         d1 = MatrixUtils.columnToRow(d1Column);
         RingInteger[] v = RingUtils.substractVectors(d1, d);
         log.debug(MatrixUtils.printVector(v, "v"));
+
+        this.htmlContent += FileUtils.printVector(v, "Вектор v:");
+        this.htmlContent += FileUtils.end();
+
         return v;
+    }
+
+    @SneakyThrows
+    public void createReport() {
+        this.htmlContent += "</body>\n" +
+                "</html>";
+
+        File file = new File("Alice.html");
+        try {
+            // Replace file if it already exists
+            if (file.exists()) {
+                file.delete();
+            }
+
+            // Create new file
+            file.createNewFile();
+
+            // Write content to file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8));
+            writer.write(this.htmlContent);
+            writer.close();
+
+            log.debug("File created successfully.");
+        } catch (IOException e) {
+            log.error("An error occurred while creating the file.");
+            e.printStackTrace();
+        }
     }
 
     private RingInteger[][] mockMatrixA() {
@@ -255,29 +292,42 @@ public class Receiver {
     }
 
     private RingInteger[][] mockInvMatrixB() {
+        if(k == 25){
+            return new RingInteger[][]{
+                    {
+                            RingInteger.valueOf(1, k),
+                            RingInteger.valueOf(1, k),
+                    },
+                    {
+                            RingInteger.valueOf(24, k),
+                            RingInteger.valueOf(23, k),
+                    }
+            };
+        }
+
         return new RingInteger[][] {
                 {
                         RingInteger.valueOf(1, k),
-                        RingInteger.valueOf(1, k),
+                        RingInteger.valueOf(26, k),
                 },
                 {
-                        RingInteger.valueOf(24, k),
-                        RingInteger.valueOf(23, k),
+                        RingInteger.valueOf(124, k),
+                        RingInteger.valueOf(73, k),
                 }
         };
     }
 
-    private RingInteger[] mockShift1() {
-        return new RingInteger[]{
-                        RingInteger.valueOf(1, k),
-                        RingInteger.valueOf(5, k),
-        };
-    }
-
-    private RingInteger[] mockShift2() {
-        return new RingInteger[]{
-                RingInteger.valueOf(1, k),
-                RingInteger.valueOf(1, k),
-        };
-    }
+//    private RingInteger[] mockShift1() {
+//        return new RingInteger[]{
+//                        RingInteger.valueOf(1, k),
+//                        RingInteger.valueOf(5, k),
+//        };
+//    }
+//
+//    private RingInteger[] mockShift2() {
+//        return new RingInteger[]{
+//                RingInteger.valueOf(1, k),
+//                RingInteger.valueOf(1, k),
+//        };
+//    }
 }
