@@ -16,6 +16,7 @@ public class ReceiverApp extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
+        setTitle("Receiver");
         setLocationRelativeTo(null);
         setSize(300, 300);
         setVisible(true);

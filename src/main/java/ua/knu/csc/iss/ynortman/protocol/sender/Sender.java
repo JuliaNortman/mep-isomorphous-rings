@@ -127,10 +127,6 @@ public class Sender {
 
         this.htmlContent += FileUtils.printVector(msg, "Вектор v:");
 
-//        msg = new RingInteger[] {
-//                RingInteger.valueOf(17, A[0][0].getM()),
-//                RingInteger.valueOf(0, A[0][0].getM())
-//        };
         RingInteger[][] basis = NHLDESystemTSS.basis(new NHLDESystem(A, msg));
         RingInteger[] x = NHLDE.randomSolutionVector(basis);
         log.debug(MatrixUtils.printVector(x, "x"));
@@ -151,9 +147,9 @@ public class Sender {
         this.htmlContent += FileUtils.printVector(a, "Вектор a:");
         this.htmlContent += FileUtils.printVector(x, "Вектор x:");
         this.htmlContent += FileUtils.printVector(d, "Вектор d:");
-        this.htmlContent += FileUtils.printVector(d1, "Вектор d1:");
+        this.htmlContent += FileUtils.printVector(d1, "Вектор d<sub>1</sub>:");
         this.htmlContent += FileUtils.printVector(acRingVectorD, "Вектор d в АКК:");
-        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Вектор d1 в АКК:");
+        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Вектор d<sub>1</sub> в АКК:");
 
         this.htmlContent += FileUtils.end();
 

@@ -65,12 +65,27 @@ public class FileUtils {
     }
 
     public static String printGenGResult(RingInteger[] arr) {
-        StringBuilder html = new StringBuilder();
-        html.append("<p>Визначальний рядок:</p> <div>");
-        html.append(generateHTMLTableWithHeader(arr));
-        html.append("</div>");
-        html.append("<br>");
-        return html.toString();
+        RingInteger[] header = new RingInteger[arr.length];
+        for(int i = 0; i < arr.length; ++i) {
+            header[i] = RingInteger.valueOf(i, arr[0].getM());
+        }
+
+        RingInteger[][] matrix = new RingInteger[2][arr.length];
+        matrix[0] = header;
+        matrix[1] = arr;
+        return printMatrix(matrix, "Визначальний рядок:");
+
+//        StringBuilder html = new StringBuilder();
+//        html.append("<div>Визначальний рядок: <p>[");
+//        for (int i = 0; i < arr.length; ++i) {
+//            html.append(arr[i].getNumber());
+//            if(i != arr.length -1) {
+//                html.append(",");
+//            }
+//        }
+//        html.append("]</p></div>");
+//        html.append("<br>");
+//        return html.toString();
     }
 
     public static String printMatrix(RingInteger[][] matrix, String text) {
@@ -129,6 +144,46 @@ public class FileUtils {
         return sb.toString();
     }
 
+    public static String printTableWithHeaders(RingInteger[][] matrix) {
+
+                int n = matrix[0].length;
+                int m = matrix.length;
+
+                StringBuilder htmlBuilder = new StringBuilder();
+                htmlBuilder.append("\t<style>\n");
+                htmlBuilder.append("\t\ttable {\n");
+                htmlBuilder.append("\t\t\tborder-collapse: collapse;\n");
+                htmlBuilder.append("\t\t\tmargin: 20px auto;\n");
+                htmlBuilder.append("\t\t}\n");
+                htmlBuilder.append("\t\tth, td {\n");
+                htmlBuilder.append("\t\t\tborder: 1px solid black;\n");
+                htmlBuilder.append("\t\t\tpadding: 10px;\n");
+                htmlBuilder.append("\t\t\ttext-align: center;\n");
+                htmlBuilder.append("\t\t}\n");
+                htmlBuilder.append("\t</style>\n");
+                htmlBuilder.append("\t<table>\n");
+                // first row with numbers from 0 to n-1
+                htmlBuilder.append("\t\t<tr>\n");
+                htmlBuilder.append("\t\t\t<th></th>\n");
+                for (int i = 0; i < n; i++) {
+                    htmlBuilder.append("\t\t\t<th>").append(i).append("</th>\n");
+                }
+                htmlBuilder.append("\t\t</tr>\n");
+                // rest of the rows with 0 to m-1 in first column and array values in remaining columns
+                for (int i = 0; i < m; i++) {
+                    htmlBuilder.append("\t\t<tr>\n");
+                    htmlBuilder.append("\t\t\t<th>").append(i).append("</th>\n");
+                    for (int j = 0; j < n; j++) {
+                        htmlBuilder.append("\t\t\t<td>").append(matrix[i][j].getNumber()).append("</td>\n");
+                    }
+                    htmlBuilder.append("\t\t</tr>\n");
+                }
+                htmlBuilder.append("\t</table>\n");
+                htmlBuilder.append("<br>");
+
+                return htmlBuilder.toString();
+
+    }
 
     public static String end() {
         return "<hr>";

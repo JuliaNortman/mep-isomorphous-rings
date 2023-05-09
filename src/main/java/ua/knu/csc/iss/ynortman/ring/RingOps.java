@@ -46,45 +46,45 @@ public class RingOps {
         return P;
     }
 
-    public static int[][] additionTable(int k, int[] unityRow) {
-        int[][] table = new int[k][k];
+    public static RingInteger[][] additionTable(int k, RingInteger[] unityRow) {
+        RingInteger[][] table = new RingInteger[k][k];
         for(int i = 0; i < k; ++i) {
-            Arrays.fill(table[i], -1);
-            table[0][i] = i;
-            table[i][0] = i;
+            Arrays.fill(table[i], RingInteger.zero(k));
+            table[0][i] = RingInteger.valueOf(i, k);
+            table[i][0] = RingInteger.valueOf(i, k);
             table[1][i] = unityRow[i];
             table[i][1] = unityRow[i];
         }
         int prevElement = 1;
-        while (table[prevElement][1] != 0) {
-            int element = table[prevElement][1];
+        while (!table[prevElement][1].equals(RingInteger.zero(k))) {
+            RingInteger element = table[prevElement][1];
             for(int i = 2; i < k; ++i) {
-                table[element][i] = table[1][table[prevElement][i]];
-                table[i][element] = table[element][i];
+                table[element.getNumber()][i] = table[1][table[prevElement][i].getNumber()];
+                table[i][element.getNumber()] = table[element.getNumber()][i];
             }
-            prevElement = element;
+            prevElement = element.getNumber();
         }
         log.debug(Arrays.deepToString(table));
         return table;
     }
 
-    public static int[][] multiplicationTable(int k, int[][] additionTable) {
-        int[][] table = new int[k][k];
+    public static RingInteger[][] multiplicationTable(int k, RingInteger[][] additionTable) {
+        RingInteger[][] table = new RingInteger[k][k];
         for(int i = 0; i < k; ++i) {
-            Arrays.fill(table[i], -1);
-            table[0][i] = 0;
-            table[i][0] = 0;
-            table[1][i] = i;
-            table[i][1] = i;
+            Arrays.fill(table[i], RingInteger.zero(k));
+            table[0][i] = RingInteger.zero(k);
+            table[i][0] = RingInteger.zero(k);
+            table[1][i] = RingInteger.valueOf(i, k);
+            table[i][1] = RingInteger.valueOf(i, k);
         }
         int prevElement = 1;
-        while (additionTable[prevElement][1] != 0) {
-            int element = additionTable[prevElement][1];
+        while (!additionTable[prevElement][1].equals(RingInteger.zero(k))) {
+            RingInteger element = additionTable[prevElement][1];
             for(int i = 2; i < k; ++i) {
-                table[element][i] = additionTable[i][table[prevElement][i]];
-                table[i][element] = table[element][i];
+                table[element.getNumber()][i] = additionTable[i][table[prevElement][i].getNumber()];
+                table[i][element.getNumber()] = table[element.getNumber()][i];
             }
-            prevElement = element;
+            prevElement = element.getNumber();
         }
         log.debug(Arrays.deepToString(table));
         return table;

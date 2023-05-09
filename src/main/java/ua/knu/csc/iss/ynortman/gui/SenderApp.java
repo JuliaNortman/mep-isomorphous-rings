@@ -11,6 +11,7 @@ public class SenderApp extends JFrame{
         JPanel boxPanel = new JPanel();
         boxPanel.setLayout(new BoxLayout(boxPanel, BoxLayout.PAGE_AXIS));
 
+        setTitle("Sender");
 //        JTextField textField = new JTextField(20);
         JTextArea textField = new JTextArea();
         textField.setColumns(20);

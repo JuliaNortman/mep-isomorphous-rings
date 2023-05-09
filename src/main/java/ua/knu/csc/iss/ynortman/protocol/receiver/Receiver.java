@@ -117,6 +117,7 @@ public class Receiver {
             e.printStackTrace();
         }
         log.info("Received message: {}", receivedMessage.getMessage());
+        matricesToFile();
         return receivedMessage.getMessage();
     }
 
@@ -149,13 +150,13 @@ public class Receiver {
                     this.mockMatrixB(), this.mockInvMatrixB()));
 //            this.invMatrices.add(i, MatrixUtils.triangularInvertibleMatrix(m, k));
             this.shiftVectors.add(i, RingUtils.randomVector(2, k));
-            this.htmlContent += FileUtils.printVector(this.shiftVectors.get(i), "Вектор a" + i + ":");
+            this.htmlContent += FileUtils.printVector(this.shiftVectors.get(i), "Вектор a<sub>" + i + "</sub>:");
 
 //            this.shiftVectors.add(i, this.mockShift1());
 //            this.shiftVectors.add(i, RingUtils.randomVector(3*m, k));
         }
         this.shiftVectors.add(r, RingUtils.randomVector(2, k));
-        this.htmlContent += FileUtils.printVector(this.shiftVectors.get(r), "Вектор a" + r + ":");
+        this.htmlContent += FileUtils.printVector(this.shiftVectors.get(r), "Вектор a<sub>" + r + "</sub>:");
 
 //        this.shiftVectors.add(r, this.mockShift2());
 //        this.shiftVectors.add(r, RingUtils.randomVector(3*m, k));
@@ -199,9 +200,9 @@ public class Receiver {
         RingInteger[] d1 = RingOps.vectorFromACRing(acRingVectorD1, this.substitution);
 
         this.htmlContent += FileUtils.printVector(acRingVectorD, "Вектор d в АКК:");
-        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Вектор d1 в АКК:");
+        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Вектор d<sub>1</sub> в АКК:");
         this.htmlContent += FileUtils.printVector(d, "Вектор d:");
-        this.htmlContent += FileUtils.printVector(d1, "Вектор d1:");
+        this.htmlContent += FileUtils.printVector(d1, "Вектор d<sub>1</sub>:");
 
 
         log.debug(MatrixUtils.printVector(d, "d"));
@@ -259,6 +260,18 @@ public class Receiver {
             log.error("An error occurred while creating the file.");
             e.printStackTrace();
         }
+    }
+
+    private void matricesToFile() {
+        RingInteger[] genG = RingOps.genG(b, c, k);
+        RingInteger[][] additionTable = RingOps.additionTable(k, genG);
+        RingInteger[][] multTable = RingOps.multiplicationTable(k, additionTable);
+
+        this.htmlContent += FileUtils.printGenGResult(genG);
+        this.htmlContent += "Таблиця додавання:";
+        this.htmlContent += FileUtils.printTableWithHeaders(additionTable);
+        this.htmlContent += "Таблиця множення:";
+        this.htmlContent += FileUtils.printTableWithHeaders(multTable);
     }
 
     private RingInteger[][] mockMatrixA() {
