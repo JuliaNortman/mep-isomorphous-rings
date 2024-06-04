@@ -78,7 +78,7 @@ public class RingUtils {
         for(int i = 0; i < n; ++i) {
             vector[i] = RingInteger.random(r);
         }
-        // спрощує ? вектор
+        // simplifies ? vector
         return simplifyVector(vector);
     }
 

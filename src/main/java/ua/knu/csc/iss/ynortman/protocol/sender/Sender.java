@@ -120,12 +120,12 @@ public class Sender {
         log.debug(MatrixUtils.printMatrix(A, "A"));
         log.debug(MatrixUtils.printMatrix(D, "D"));
 
-        this.htmlContent += FileUtils.printMatrix(acRingA, "Матриця A в АКК:");
-        this.htmlContent += FileUtils.printMatrix(acRingD, "Матриця D в АКК:");
-        this.htmlContent += FileUtils.printMatrix(A, "Матриця A:");
-        this.htmlContent += FileUtils.printMatrix(D, "Матриця D:");
+        this.htmlContent += FileUtils.printMatrix(acRingA, "Matrix A in AKK:");
+        this.htmlContent += FileUtils.printMatrix(acRingD, "Matrix D in AKK:");
+        this.htmlContent += FileUtils.printMatrix(A, "Matrix A:");
+        this.htmlContent += FileUtils.printMatrix(D, "Matrix D:");
 
-        this.htmlContent += FileUtils.printVector(msg, "Вектор v:");
+        this.htmlContent += FileUtils.printVector(msg, "Vector v:");
 
         RingInteger[][] basis = NHLDESystemTSS.basis(new NHLDESystem(A, msg));
         RingInteger[] x = NHLDE.randomSolutionVector(basis);
@@ -144,12 +144,12 @@ public class Sender {
         log.debug(MatrixUtils.printVector(acRingVectorD, "acRingVectorD"));
         log.debug(MatrixUtils.printVector(acRingVectorD1, "acRingVectorD1"));
 
-        this.htmlContent += FileUtils.printVector(a, "Вектор a:");
-        this.htmlContent += FileUtils.printVector(x, "Вектор x:");
-        this.htmlContent += FileUtils.printVector(d, "Вектор d:");
-        this.htmlContent += FileUtils.printVector(d1, "Вектор d<sub>1</sub>:");
-        this.htmlContent += FileUtils.printVector(acRingVectorD, "Вектор d в АКК:");
-        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Вектор d<sub>1</sub> в АКК:");
+        this.htmlContent += FileUtils.printVector(a, "Vector a:");
+        this.htmlContent += FileUtils.printVector(x, "Vector x:");
+        this.htmlContent += FileUtils.printVector(d, "Vector d:");
+        this.htmlContent += FileUtils.printVector(d1, "Vector d<sub>1</sub>:");
+        this.htmlContent += FileUtils.printVector(acRingVectorD, "Vector d in AKK:");
+        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Vector d<sub>1</sub> in AKK:");
 
         this.htmlContent += FileUtils.end();
 

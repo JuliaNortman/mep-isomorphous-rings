@@ -174,10 +174,10 @@ public class Receiver {
         log.debug(MatrixUtils.printMatrix(acRingA, "A"));
         log.debug(MatrixUtils.printMatrix(acRingD, "D"));
 
-        this.htmlContent += FileUtils.printMatrix(A, "Матриця A:");
-        this.htmlContent += FileUtils.printMatrix(D, "Матриця D:");
-        this.htmlContent += FileUtils.printMatrix(acRingA, "Матриця A в АКК:");
-        this.htmlContent += FileUtils.printMatrix(acRingD, "Матриця D в АКК:");
+        this.htmlContent += FileUtils.printMatrix(A, "Matrix A:");
+        this.htmlContent += FileUtils.printMatrix(D, "Matrix D:");
+        this.htmlContent += FileUtils.printMatrix(acRingA, "Matrix A in AKK:");
+        this.htmlContent += FileUtils.printMatrix(acRingD, "Matrix D in AKK:");
 
         return new MatricesModel(acRingA, acRingD);
     }
@@ -199,10 +199,10 @@ public class Receiver {
         RingInteger[] d = RingOps.vectorFromACRing(acRingVectorD, this.substitution);
         RingInteger[] d1 = RingOps.vectorFromACRing(acRingVectorD1, this.substitution);
 
-        this.htmlContent += FileUtils.printVector(acRingVectorD, "Вектор d в АКК:");
-        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Вектор d<sub>1</sub> в АКК:");
-        this.htmlContent += FileUtils.printVector(d, "Вектор d:");
-        this.htmlContent += FileUtils.printVector(d1, "Вектор d<sub>1</sub>:");
+        this.htmlContent += FileUtils.printVector(acRingVectorD, "Vector d in AKK:");
+        this.htmlContent += FileUtils.printVector(acRingVectorD1, "Vector d<sub>1</sub> in AKK:");
+        this.htmlContent += FileUtils.printVector(d, "Vector d:");
+        this.htmlContent += FileUtils.printVector(d1, "Vector d<sub>1</sub>:");
 
 
         log.debug(MatrixUtils.printVector(d, "d"));
@@ -268,9 +268,9 @@ public class Receiver {
         RingInteger[][] multTable = RingOps.multiplicationTable(k, additionTable);
 
         this.htmlContent += FileUtils.printGenGResult(genG);
-        this.htmlContent += "Таблиця додавання:";
+        this.htmlContent += "Addition table:";
         this.htmlContent += FileUtils.printTableWithHeaders(additionTable);
-        this.htmlContent += "Таблиця множення:";
+        this.htmlContent += "Multiplication table:";
         this.htmlContent += FileUtils.printTableWithHeaders(multTable);
     }
 

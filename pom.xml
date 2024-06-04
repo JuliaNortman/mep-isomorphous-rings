@@ -12,9 +12,21 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+<!--        <errorProneJavac>${com.google.errorprone:javac:jar}</errorProneJavac>-->
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>io.github.eisop</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.34.0-eisop1</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.errorprone</groupId>-->
+<!--            <artifactId>javac</artifactId>-->
+<!--            <version>9+181-r4173-1</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -75,9 +87,179 @@
 
     </dependencies>
 
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>checkerframework</id>-->
+<!--            &lt;!&ndash; If you omit the activation block, run mvn with "-P checkerframework" to run checkers. &ndash;&gt;-->
+<!--            <activation>-->
+<!--                <jdk>[1.8,)</jdk>-->
+<!--            </activation>-->
+<!--            <build>-->
+<!--                <plugins>-->
+<!--                    <plugin>-->
+<!--                        <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                        <version>3.10.1</version>-->
+<!--                        <configuration>-->
+<!--                            <fork>true</fork> &lt;!&ndash; Must fork or else JVM arguments are ignored. &ndash;&gt;-->
+<!--                            <compilerArguments>-->
+<!--                                <Xmaxerrs>10000</Xmaxerrs>-->
+<!--                                <Xmaxwarns>10000</Xmaxwarns>-->
+<!--                            </compilerArguments>-->
+<!--                            <annotationProcessorPaths>-->
+<!--                                <path>-->
+<!--                                    <groupId>io.github.eisop</groupId>-->
+<!--                                    <artifactId>checker</artifactId>-->
+<!--                                    <version>3.34.0-eisop1</version>-->
+<!--                                </path>-->
+<!--                            </annotationProcessorPaths>-->
+<!--                            <annotationProcessors>-->
+<!--                                &lt;!&ndash; Add all the checkers you want to enable here &ndash;&gt;-->
+<!--                                <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>-->
+<!--                            </annotationProcessors>-->
+<!--                            <compilerArgs>-->
+<!--&lt;!&ndash;                                -Awarns turns type-checking errors into warnings. &ndash;&gt;-->
+<!--                                 <arg>-Awarns</arg>-->
+<!--                            </compilerArgs>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+<!--                </plugins>-->
+<!--            </build>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>io.github.eisop</groupId>-->
+<!--                    <artifactId>checker</artifactId>-->
+<!--                    <version>3.34.0-eisop1</version>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+
+<!--        <profile>-->
+<!--            <id>checkerframework-jdk8</id>-->
+<!--            <activation>-->
+<!--                <jdk>1.8</jdk>-->
+<!--            </activation>-->
+<!--            &lt;!&ndash; using github.com/google/error-prone-javac is required when running on JDK 8 &ndash;&gt;-->
+<!--            <properties>-->
+<!--                <javac.version>9+181-r4173-1</javac.version>-->
+<!--            </properties>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>com.google.errorprone</groupId>-->
+<!--                    <artifactId>javac</artifactId>-->
+<!--                    <version>9+181-r4173-1</version>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--            <build>-->
+<!--                <plugins>-->
+<!--                    <plugin>-->
+<!--                        <groupId>org.apache.maven.plugins</groupId>-->
+<!--                        <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                        <configuration>-->
+<!--                            <fork>true</fork>-->
+<!--                            <compilerArgs combine.children="append">-->
+<!--                                <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>-->
+<!--                            </compilerArgs>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+<!--                </plugins>-->
+<!--            </build>-->
+<!--        </profile>-->
+
+<!--        <profile>-->
+<!--            <id>checkerframework-jdk9orlater</id>-->
+<!--            <activation>-->
+<!--                <jdk>[9,)</jdk>-->
+<!--            </activation>-->
+<!--            <build>-->
+<!--                <plugins>-->
+<!--                    <plugin>-->
+<!--                        <groupId>org.apache.maven.plugins</groupId>-->
+<!--                        <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                        <configuration>-->
+<!--                            <fork>true</fork>-->
+<!--                            <compilerArgs combine.children="append">-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>-->
+<!--                                <arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>-->
+<!--                            </compilerArgs>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+<!--                </plugins>-->
+<!--            </build>-->
+<!--            <properties>-->
+<!--                &lt;!&ndash; Needed for animal-sniffer-maven-plugin version 1.19 which is broken (version 1.20 is fixed). &ndash;&gt;-->
+<!--                <animal.sniffer.skip>true</animal.sniffer.skip>-->
+<!--            </properties>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
+    <profiles>
+        <profile>
+            <id>checkerframework</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.10.1</version>
+                        <configuration>
+                            <fork>true</fork>
+                            <compilerArguments>
+                                <Xmaxerrs>10000</Xmaxerrs>
+                                <Xmaxwarns>10000</Xmaxwarns>
+                            </compilerArguments>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>io.github.eisop</groupId>
+                                    <artifactId>checker</artifactId>
+                                    <version>3.34.0-eisop1</version>
+                                </path>
+                            </annotationProcessorPaths>
+                            <annotationProcessors>
+                                <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>
+                            </annotationProcessors>
+                            <compilerArgs>
+                                <arg>-Awarns</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>io.github.eisop</groupId>
+                    <artifactId>checker</artifactId>
+                    <version>3.34.0-eisop1</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+
     <build>
         <finalName>message-exchange-protocol</finalName>
         <plugins>
+
+            <plugin>
+                <!-- This plugin will set properties values using dependency information -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

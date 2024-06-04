@@ -52,7 +52,7 @@ public class FileUtils {
 
     public static String printSubstitutionRow(RingInteger[] substitution) {
         StringBuilder html = new StringBuilder();
-        html.append("<div>Перестановка: <p>(");
+        html.append("<div>Substitution: <p>(");
         for (int i = 0; i < substitution.length; ++i) {
             html.append(substitution[i].getNumber());
             if(i != substitution.length -1) {
@@ -73,10 +73,10 @@ public class FileUtils {
         RingInteger[][] matrix = new RingInteger[2][arr.length];
         matrix[0] = header;
         matrix[1] = arr;
-        return printMatrix(matrix, "Визначальний рядок:");
+        return printMatrix(matrix, "Defining row:");
 
 //        StringBuilder html = new StringBuilder();
-//        html.append("<div>Визначальний рядок: <p>[");
+//        html.append("<div>Defining row: <p>[");
 //        for (int i = 0; i < arr.length; ++i) {
 //            html.append(arr[i].getNumber());
 //            if(i != arr.length -1) {

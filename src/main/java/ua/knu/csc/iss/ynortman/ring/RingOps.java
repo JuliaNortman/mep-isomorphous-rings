@@ -15,7 +15,7 @@ public class RingOps {
 
     /*
     * Given order k and coefficients a,c of expression f(i)=a*i+c
-    * defines substitution (підстановка) between ring Zk and associative-commutative ring Gk
+    * defines substitution between ring Zk and associative-commutative ring Gk
     * */
     public static RingInteger[] substitution(int a, int c, int k) {
         if(!BigInteger.valueOf(a).gcd(BigInteger.valueOf(k)).equals(BigInteger.ONE)) {
@@ -157,7 +157,7 @@ public class RingOps {
         return ACRingVector;
     }
 
-    // Чи є число дільником одиниці в АКК
+    //
     public static boolean isDivisorByOne(RingInteger value, RingInteger[] substitution) {
         // Transform value from AC ring to ordinary ring
         RingInteger valueInRing = isomorphism(value, substitution, false);
